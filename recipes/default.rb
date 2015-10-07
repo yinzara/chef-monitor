@@ -25,7 +25,7 @@ ip_type = node["monitor"]["use_local_ipv4"] ? "local_ipv4" : "public_ipv4"
 
 client_attributes = node["monitor"]["additional_client_attributes"].to_hash
 
-tag_subs = []
+tags_subs = []
 if node.attribute?('tags') 
   node['tags'].select{ |tag| tag.index('sensu_') == 0  }.each do |tag|
     tags_subs << tag[tag.index('_') + 1..-1]
@@ -38,7 +38,7 @@ sensu_client node.name do
   else
     address node["ipaddress"]
   end
-  subscriptions (node["roles"] + ["all"] + node['monitor']['subscriptions'] + tag_subs).uniq
+  subscriptions (node["roles"] + ["all"] + node['monitor']['subscriptions'] + tags_subs).uniq
   additional client_attributes
 end
 
