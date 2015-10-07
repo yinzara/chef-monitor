@@ -25,13 +25,20 @@ ip_type = node["monitor"]["use_local_ipv4"] ? "local_ipv4" : "public_ipv4"
 
 client_attributes = node["monitor"]["additional_client_attributes"].to_hash
 
+tag_subs = []
+if node.attribute?('tags') 
+  node['tags'].select{ |tag| tag.index('sensu_') == 0  }.each do |tag|
+    tags_subs << tag[tag.index('_') + 1..-1]
+  end
+end
+
 sensu_client node.name do
   if node.has_key?("cloud")
     address node["cloud"][ip_type] || node["ipaddress"]
   else
     address node["ipaddress"]
   end
-  subscriptions node["roles"] + ["all"]
+  subscriptions (node["roles"] + ["all"] + node['monitor']['subscriptions'] + tag_subs).uniq
   additional client_attributes
 end
 

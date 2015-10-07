@@ -6,3 +6,4 @@
 .kitchen.local.yml*
 tmp/
 vendor/
+/nbproject/private/

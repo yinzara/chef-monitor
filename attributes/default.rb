@@ -19,3 +19,5 @@ default["monitor"]["metric_handlers"] = ["debug"]
 
 default["monitor"]["client_extension_dir"] = "/etc/sensu/extensions/client"
 default["monitor"]["server_extension_dir"] = "/etc/sensu/extensions/server"
+
+default["monitor"]["subscriptions"] = Array.new
