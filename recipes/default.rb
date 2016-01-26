@@ -27,8 +27,8 @@ client_attributes = node["monitor"]["additional_client_attributes"].to_hash
 
 tags_subs = []
 if node.attribute?('tags') 
-  node['tags'].select{ |tag| tag.index('sensu_') == 0  }.each do |tag|
-    tags_subs << tag[tag.index('_') + 1..-1]
+  tags_subs = node['tags'].select{ |tag| tag.index('sensu_') == 0  }.map do |tag|
+    tag[tag.index('_') + 1..-1]
   end
 end
 
@@ -38,7 +38,7 @@ sensu_client node.name do
   else
     address node["ipaddress"]
   end
-  subscriptions (node["roles"] + ["all"] + node['monitor']['subscriptions'] + tags_subs).uniq
+  subscriptions (node["roles"] + ["all", Chef::Config[:node_name]] + node['monitor']['subscriptions'] + tags_subs).uniq
   additional client_attributes
 end
 
