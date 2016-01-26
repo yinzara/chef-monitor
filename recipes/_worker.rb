@@ -53,14 +53,28 @@ else
 end
 
 check_definitions.each do |check|
-  sensu_check check["id"] do
-    type check["type"]
-    command check["command"]
-    subscribers check["subscribers"]
-    interval check["interval"]
-    handlers check["handlers"]
-    additional check["additional"]
+  if check.has_key?("checks")
+    check["checks"].each do |check_id, check_val|
+      sensu_check check_id do
+        type check_val["type"]
+        command check_val["command"]
+        subscribers check_val["subscribers"]
+        interval check_val["interval"]
+        handlers check_val["handlers"]
+        additional check_val["additional"]
+      end
+    end
+  else
+    sensu_check check["id"] do
+      type check["type"]
+      command check["command"]
+      subscribers check["subscribers"]
+      interval check["interval"]
+      handlers check["handlers"]
+      additional check["additional"]
+    end    
   end
+  
 end
 
 include_recipe "sensu::server_service"
